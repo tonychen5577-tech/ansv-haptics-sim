@@ -91,9 +91,9 @@ console.log(`📈 稳态长振动幅值: ±${Math.max(...res.displacement.slice(
 
 ---
 
-## 🤝 链接与商业支持
+## 🤝 个人技术网站与交流频道
 
-* 🌐 **官网在线多物理场实验室**：[https://ansv.net](https://ansv.net)
+* 🌐 **个人技术网站**：[https://ansv.net](https://ansv.net)
 * 📱 **微信公众号**：**【ANSV微型执行器】**
 * 💡 **知乎专栏**：[知乎@ansv-net](https://www.zhihu.com/people/ansv-net)
 

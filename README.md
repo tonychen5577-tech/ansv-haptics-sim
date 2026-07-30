@@ -91,9 +91,9 @@ console.log(`📈 Steady-State Amplitude: ±${Math.max(...res.displacement.slice
 
 ---
 
-## 🤝 Links & Commercial Support
+## 🤝 Links & Personal Tech Channels
 
-* 🌐 **Online Multi-Physics Laboratory**: [https://ansv.net](https://ansv.net)
+* 🌐 **Personal Tech Website**: [https://ansv.net](https://ansv.net)
 * 📱 **WeChat Official Account**: **【ANSV微型执行器】**
 * 💡 **Zhihu Column**: [Zhihu@ansv-net](https://www.zhihu.com/people/ansv-net)
 
