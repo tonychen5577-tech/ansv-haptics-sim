@@ -1,7 +1,7 @@
 # ⚡ ansv-haptics-sim
 
-> **A Minimal 2nd-Order Harmonic Oscillator Demo for Actuator Physics & Motor 5 Key Parameters.**  
-> A lightweight physics simulation tool for Haptic Actuators (LRA / VCM / ERM).
+> 🚀 **A minimal, zero-dependency 2nd-order damped harmonic oscillator solver for haptic actuator physics & motor 5 key parameters.**  
+> 专为硬件工程师和算法开发者打造的轻量级触觉马达（LRA / VCM）二阶物理求解器与动态位移仿真引擎。
 
  English | [简体中文](README_CN.md)
 
