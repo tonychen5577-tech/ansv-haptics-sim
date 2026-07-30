@@ -40,8 +40,12 @@ $$m \cdot \frac{d^2x}{dt^2} + c \cdot \frac{dx}{dt} + k \cdot x = F(t) = BL \cdo
 | **`current`** | $I$ | **驱动电流** (Drive Current) | `0.4` | $\text{A}$ (安培) |
 
 **衍生指标自动导出：**
-- **固有谐振频率**：$f_0 = \frac{1}{2\pi}\sqrt{\frac{k}{m}}$ （Hz）
-- **加速度响应**：$a(t) = \frac{d^2x}{dt^2} / 9.81$ （G 值）
+
+- **固有谐振频率 ($f_0$)**：
+  $$f_0 = \frac{1}{2\pi}\sqrt{\frac{k}{m}} \quad (\text{Hz})$$
+
+- **加速度响应 ($a$)**：
+  $$a(t) = \frac{d^2x/dt^2}{9.81} \quad (\text{G 值})$$
 
 ---
 
