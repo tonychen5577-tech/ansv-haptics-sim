@@ -4,7 +4,8 @@
   "description": "A Lightweight 2nd-Order Physics Solver for Micro-Actuators (LRA / ERM / VCM) & Haptic Vibration Waveforms.",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node test.js",
+    "build:svg": "node generate_svg.js"
   },
   "keywords": [
     "haptics",
