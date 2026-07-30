@@ -134,7 +134,7 @@ function generateSVGAnimation(data, params) {
   <rect x="${stopX}" y="${padding}" width="${width - padding - stopX}" height="${graphHeight}" fill="#ff0055" fill-opacity="0.03" />
 
   <!-- Title Header -->
-  <text x="${padding}" y="34" fill="#f0f6fc" font-size="16" font-weight="700">⚡ ANSV-HAPTICS-SIM | Full Cycle: Power-On Drive & Stop Ring-down</text>
+  <text x="${padding}" y="34" fill="#f0f6fc" font-size="16" font-weight="700">⚡ ANSV-HAPTICS-SIM | Full Cycle: Power-On Drive &amp; Stop Ring-down</text>
   <text x="${width - padding}" y="34" fill="#8b949e" font-size="12" text-anchor="end">m=${(params.mass*1000).toFixed(1)}g | k=${params.stiffness}N/m | f0=${data.f0Hz}Hz</text>
 
   <!-- 状态标识区 (Power-on vs Power-off) -->

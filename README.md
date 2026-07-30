@@ -12,7 +12,7 @@
 
 以下为 `ansv-haptics-sim` 求解获得的触觉马达（LRA）受力阶跃响应与阻尼衰减动画曲线（SVG 动态矢量图形，原生支持暗黑主题）：
 
-![2nd-Order Damped Oscillator Simulation](https://raw.githubusercontent.com/tonychen5577-tech/ansv-haptics-sim/main/docs/simulation.svg?v=3)
+![2nd-Order Damped Oscillator Simulation](https://raw.githubusercontent.com/tonychen5577-tech/ansv-haptics-sim/main/docs/simulation.svg?v=4)
 
 ---
 

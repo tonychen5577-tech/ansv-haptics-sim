@@ -21,7 +21,7 @@
   <rect x="411.3513513513513" y="60" width="428.6486486486487" height="300" fill="#ff0055" fill-opacity="0.03" />
 
   <!-- Title Header -->
-  <text x="60" y="34" fill="#f0f6fc" font-size="16" font-weight="700">⚡ ANSV-HAPTICS-SIM | Full Cycle: Power-On Drive & Stop Ring-down</text>
+  <text x="60" y="34" fill="#f0f6fc" font-size="16" font-weight="700">⚡ ANSV-HAPTICS-SIM | Full Cycle: Power-On Drive &amp; Stop Ring-down</text>
   <text x="840" y="34" fill="#8b949e" font-size="12" text-anchor="end">m=1.5g | k=800N/m | f0=116.2Hz</text>
 
   <!-- 状态标识区 (Power-on vs Power-off) -->
