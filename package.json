@@ -1,0 +1,21 @@
+{
+  "name": "ansv-haptics-sim",
+  "version": "1.0.0",
+  "description": "A Lightweight 2nd-Order Physics Solver for Micro-Actuators (LRA / ERM / VCM) & Haptic Vibration Waveforms.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "keywords": [
+    "haptics",
+    "actuator",
+    "lra",
+    "erm",
+    "vcm",
+    "physics-simulation",
+    "differential-equations",
+    "ansv-net"
+  ],
+  "author": "ansv.net",
+  "license": "MIT"
+}
