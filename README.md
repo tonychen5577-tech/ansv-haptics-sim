@@ -50,17 +50,18 @@ $$m \cdot \frac{d^2x}{dt^2} + c \cdot \frac{dx}{dt} + k \cdot x = F(t) = BL \cdo
 
 ---
 
-## 🎛️ Motor Control & Haptic Drive Strategies
+## 🎛️ Motor Control & Haptic Drive Strategies [Planned]
 
-In practical **Motor Control** engineering for haptic actuators (LRA / VCM), simple sine excitation is often insufficient to achieve crisp, high-definition (HD) haptic sensations. The `ansv-haptics-sim` framework inherently supports three fundamental motor control strategies:
+> 🛠️ **Roadmap Note**:  
+> The following advanced **Motor Control** algorithms and simulation features are currently **[Under Active Development / Planned]**, and will be rolled out in upcoming releases:
 
-1. **Overdrive Control (Fast Transient Rise)**:
+1. 🔄 **[Planned] Overdrive Control (Fast Transient Rise)**:
    Applies a higher-than-rated drive voltage/current during the initial phase (first 10–20ms) to accelerate kinetic energy accumulation, significantly shortening the transient rise time.
 
-2. **Active Braking (Active Deceleration)**:
+2. 🔄 **[Planned] Active Braking (Active Deceleration)**:
    Applies a 180° phase-inverted braking pulse at the end of the haptic effect to actively counteract kinetic energy, reducing ring-down decay time by >60% for a crisp "button-click" feel.
 
-3. **Closed-Loop Resonance Tracking (Auto-Resonance)**:
+3. 🔄 **[Planned] Closed-Loop Resonance Tracking (Auto-Resonance)**:
    Monitors Back-EMF or current phase angle to dynamically adjust drive frequency, keeping the actuator locked exactly at its measured resonant frequency ($f_0$).
 
 ---

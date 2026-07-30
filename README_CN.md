@@ -49,17 +49,18 @@ $$m \cdot \frac{d^2x}{dt^2} + c \cdot \frac{dx}{dt} + k \cdot x = F(t) = BL \cdo
 
 ---
 
-## 🎛️ 马达控制与驱动算法 (Motor Control & Haptic Drive)
+## 🎛️ 马达控制与驱动算法 [规划开发中] (Motor Control & Haptic Drive - Planned)
 
-在实际的电机与触觉马达控制（Motor Control）工程中，简单的谐振波形往往无法满足高清触觉（HD Haptics）对“干脆利落”震感的要求。因此，`ansv-haptics-sim` 求解器天然支持以下三种核心马达控制策略：
+> 🛠️ **开发路线规划 (Roadmap Note)**：  
+> 以下马达控制（Motor Control）高级算法模型目前处于 **规划与研发中 [Under Active Development]**，后续版本将陆续更新推出：
 
-1. **过驱动控制 (Overdrive Control / Fast Rise)**：
+1. 🔄 **[待开发] 过驱动控制 (Overdrive Control / Fast Rise)**：
    在起振阶段（前 10~20ms）施加高于额定值的过驱动电压/电流，强行加速振子能量积累，大幅缩短起振响应时间（Rise Time）。
 
-2. **主动刹车制动 (Active Braking / Active Deceleration)**：
+2. 🔄 **[待开发] 主动刹车制动 (Active Braking / Active Deceleration)**：
    在触觉脉冲结束时刻，施加 180° 反相（Phase Inverted）的制动脉冲波形，主动抵消振子的惯性动能，将断电余震（Ring-down）时间减少 60% 以上，实现“戛然而止”的按钮点击感。
 
-3. **闭环谐振追踪 (Closed-Loop Resonance Tracking / LRA Auto-Resonance)**：
+3. 🔄 **[待开发] 闭环谐振追踪 (Closed-Loop Resonance Tracking / LRA Auto-Resonance)**：
    通过监测反电动势（Back-EMF）或电流相角，动态调整驱动频率，确保驱动频率时刻锁定在马达实测的固有谐振频率 $f_0$ 上。
 
 ---
