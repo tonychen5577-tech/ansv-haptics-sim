@@ -1,11 +1,19 @@
 {
   "name": "ansv-haptics-sim",
-  "version": "1.0.0",
-  "description": "A Lightweight 2nd-Order Physics Solver for Micro-Actuators (LRA / ERM / VCM) & Haptic Vibration Waveforms.",
+  "version": "1.1.0",
+  "description": "A Minimal, Zero-Dependency 2nd-Order Physics Solver for Micro-Actuators (LRA / VCM) & Haptic Waveforms.",
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
     "build:svg": "node generate_svg.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonychen5577-tech/ansv-haptics-sim.git"
+  },
+  "homepage": "https://ansv.net/simulations/",
+  "bugs": {
+    "url": "https://github.com/tonychen5577-tech/ansv-haptics-sim/issues"
   },
   "keywords": [
     "haptics",
@@ -13,6 +21,7 @@
     "lra",
     "erm",
     "vcm",
+    "motor-control",
     "physics-simulation",
     "differential-equations",
     "ansv-net"
