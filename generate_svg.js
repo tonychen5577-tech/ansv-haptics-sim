@@ -8,12 +8,12 @@ function runInteractiveDemo() {
   let params = {
     mass: 0.0015,
     stiffness: 800,
-    damping: 0.03,
+    damping: 0.10,     // 物理阻尼 c = 0.10 Ns/m (衰减时间常数 tau = 30ms，在 60ms 处平滑进入真正的稳态)
     bl: 1.2,
     current: 0.4,
     driveType: 'ac',
-    driveDuration: 0.120, // 120ms 长通电 (展示：起振 Rise + 稳定长振动 Steady-State)
-    duration: 0.180        // 180ms 总时长 (后 60ms 展示：断电刹车余震衰减 Ring-Down)
+    driveDuration: 0.120, // 120ms 通电 (0~45ms起振, 45~120ms完全平稳长振动)
+    duration: 0.180        // 180ms 总时长 (120~180ms 断电衰减)
   };
 
   args.forEach(arg => {
@@ -26,30 +26,29 @@ function runInteractiveDemo() {
   });
 
   console.log('----------------------------------------------------');
-  console.log('⚡ ANSV-HAPTICS-SIM | 完整触觉马达物理生命周期仿真');
+  console.log('⚡ ANSV-HAPTICS-SIM | 真实稳态物理生命周期仿真');
   console.log('----------------------------------------------------');
   console.log(` 1. 振子质量 (m)  : ${(params.mass * 1000).toFixed(2)} g (${params.mass} kg)`);
   console.log(` 2. 弹簧刚度 (k)  : ${params.stiffness} N/m`);
   console.log(` 3. 阻尼系数 (c)  : ${params.damping} Ns/m`);
   console.log(` 4. 力灵敏度 (BL) : ${params.bl} N/A`);
   console.log(` 5. 驱动电流 (I)  : ${params.current} A`);
-  console.log(` 🚀 1. 起振阶段   : 0 ~ 25 ms (Transient Rise-time)`);
-  console.log(` ⚡ 2. 稳定长振动 : 25 ~ 120 ms (Steady-State Vibration)`);
-  console.log(` ⏹️ 3. 断电余震   : 120 ~ 180 ms (Ring-down Decay)`);
+  console.log(` 🚀 1. 起振段     : 0 ~ 45 ms (Transient Rise-time)`);
+  console.log(` ⚡ 2. 稳态长振动 : 45 ~ 120 ms (True Steady-State)`);
+  console.log(` ⏹️ 3. 断电衰减   : 120 ~ 180 ms (Ring-down Decay)`);
   console.log('----------------------------------------------------');
 
   const res = solveBasicDampedOscillator(params, params.duration, 0.0001);
 
   console.log(`📌 固有谐振频率 (f0) : ${res.f0Hz} Hz`);
-  console.log(`📈 稳态强震幅值 (Peak): ±${Math.max(...res.displacement).toFixed(2)} mm`);
+  console.log(`📈 稳态振动峰值 (Steady Peak): ±${Math.max(...res.displacement.slice(600, 1100)).toFixed(2)} mm`);
   console.log('----------------------------------------------------\n');
 
-  // 重新渲染包含三大完整物理阶段的 SVG
   const svgContent = generateSVGAnimation(res, params);
   const docsDir = path.join(__dirname, 'docs');
   if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
   fs.writeFileSync(path.join(docsDir, 'simulation.svg'), svgContent);
-  console.log('✨ 已自动生成并更新包含【起振+稳态长振动+断电余震】三阶段的 SVG 动态图表！');
+  console.log('✨ 已更新生成【真实物理稳态包络】SVG 动态图表！');
 }
 
 function generateSVGAnimation(data, params) {
@@ -65,7 +64,7 @@ function generateSVGAnimation(data, params) {
   const maxT = Math.max(...times);
   const maxAbsDisp = Math.max(...displacements.map(Math.abs));
   
-  const yBound = Math.ceil(maxAbsDisp * 1.15) || 15.0;
+  const yBound = Math.ceil(maxAbsDisp * 1.2 * 10) / 10 || 8.0;
   const yMin = -yBound;
   const yMax = yBound;
 
@@ -75,9 +74,9 @@ function generateSVGAnimation(data, params) {
   const points = times.map((t, i) => `${scaleX(t).toFixed(2)},${scaleY(displacements[i]).toFixed(2)}`).join(' ');
   const zeroY = scaleY(0);
 
-  // 关键节点时间轴坐标
-  const riseX = scaleX(25); // 25ms 起振结束进入稳态
-  const stopX = scaleX(params.driveDuration * 1000); // 120ms 断电
+  // 关键物理节点
+  const riseX = scaleX(45);  // 45ms：完成起振，进入等幅平稳振动
+  const stopX = scaleX(params.driveDuration * 1000); // 120ms：断电
 
   const timeLabels = [];
   const gridLines = [];
@@ -87,7 +86,7 @@ function generateSVGAnimation(data, params) {
     timeLabels.push(`<text x="${xPos.toFixed(1)}" y="${height - padding + 22}" text-anchor="middle">${t}ms</text>`);
   }
 
-  const yStep = (yBound / 2).toFixed(0);
+  const yStep = (yBound / 2).toFixed(1);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="100%" height="100%" style="background-color: #0d1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
   <defs>
@@ -98,7 +97,7 @@ function generateSVGAnimation(data, params) {
     </linearGradient>
     <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#00f2fe"/>
-      <stop offset="15%" stop-color="#00ff87"/>
+      <stop offset="25%" stop-color="#00ff87"/>
       <stop offset="65%" stop-color="#00ff87"/>
       <stop offset="100%" stop-color="#ff0055"/>
     </linearGradient>
@@ -109,20 +108,20 @@ function generateSVGAnimation(data, params) {
   </defs>
 
   <!-- 三大阶段背景遮罩划分 -->
-  <!-- 1. 起振段 (0 ~ 25ms) -->
+  <!-- 1. 起振段 (0 ~ 45ms) -->
   <rect x="${padding}" y="${padding}" width="${riseX - padding}" height="${graphHeight}" fill="#00f2fe" fill-opacity="0.04" />
-  <!-- 2. 稳定长振动段 (25 ~ 120ms) -->
+  <!-- 2. 稳定长振动段 (45 ~ 120ms 平稳等幅) -->
   <rect x="${riseX}" y="${padding}" width="${stopX - riseX}" height="${graphHeight}" fill="#00ff87" fill-opacity="0.04" />
   <!-- 3. 断电余震衰减段 (120 ~ 180ms) -->
   <rect x="${stopX}" y="${padding}" width="${width - padding - stopX}" height="${graphHeight}" fill="#ff0055" fill-opacity="0.03" />
 
   <!-- Title Header -->
-  <text x="${padding}" y="34" fill="#f0f6fc" font-size="16" font-weight="700">⚡ ANSV-HAPTICS-SIM | Complete Haptic Lifecycle (Rise - Steady State - Ring-down)</text>
+  <text x="${padding}" y="34" fill="#f0f6fc" font-size="16" font-weight="700">⚡ ANSV-HAPTICS-SIM | Physical Lifecycle (Rise - Steady State - Ring-down)</text>
   <text x="${width - padding}" y="34" fill="#8b949e" font-size="12" text-anchor="end">m=${(params.mass*1000).toFixed(1)}g | k=${params.stiffness}N/m | f0=${data.f0Hz}Hz</text>
 
   <!-- 阶段标注文字 -->
-  <text x="${padding + 5}" y="${padding + 20}" fill="#00f2fe" font-size="11" font-weight="bold">🚀 1. 起振段 (0~25ms)</text>
-  <text x="${riseX + 15}" y="${padding + 20}" fill="#00ff87" font-size="11" font-weight="bold">⚡ 2. 持续稳定强振动段 (25~120ms Steady-State)</text>
+  <text x="${padding + 5}" y="${padding + 20}" fill="#00f2fe" font-size="11" font-weight="bold">🚀 1. 起振段 (0~45ms)</text>
+  <text x="${riseX + 15}" y="${padding + 20}" fill="#00ff87" font-size="11" font-weight="bold">⚡ 2. 持续平稳长振动段 (45~120ms Steady-State)</text>
   <text x="${stopX + 10}" y="${padding + 20}" fill="#ff4d4d" font-size="11" font-weight="bold">⏹️ 3. 断电余震 (120~180ms)</text>
 
   <!-- 阶段分割虚线 -->
@@ -148,7 +147,7 @@ function generateSVGAnimation(data, params) {
     <text x="${padding - 10}" y="${scaleY(yBound/2) + 4}" text-anchor="end">+${yStep}mm</text>
     <text x="${padding - 10}" y="${zeroY + 4}" text-anchor="end" fill="#58a6ff" font-weight="bold">0.0mm</text>
     <text x="${padding - 10}" y="${scaleY(-yBound/2) + 4}" text-anchor="end">-${yStep}mm</text>
-    <text x="${padding - 10}" y="${scaleY(-yBound) + 4}" text-anchor="end">-${yBound}mm</text>
+    <text x="${padding - 10}" y="${scaleY(-yBound)} + 4" text-anchor="end">-${yBound}mm</text>
   </g>
 
   <!-- 静态渐变填充区域 -->
