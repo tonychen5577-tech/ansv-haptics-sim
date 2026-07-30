@@ -121,6 +121,19 @@ console.log(`📈 Steady-State Amplitude: ±${Math.max(...res.displacement.slice
 
 ---
 
+## 📜 Release History
+
+- **`v1.1.0` (2026-07-31)**
+  - 🔄 Added Mermaid flowchart for core numerical integration solver architecture.
+  - ⚡ Implemented AC sine resonance drive & full haptic lifecycle (Rise $\rightarrow$ 200ms Steady-State $\rightarrow$ Ring-down).
+  - 🎨 Added `--lang=zh/en` CLI flag and clip-path sequential SVG vector wave renderer.
+  - 🛠️ Updated MIT License and personal developer background notes.
+
+- **`v1.0.0` (2026-07-30)**
+  - 🎉 Initial open-source release: Minimal 2nd-order forced damped harmonic oscillator solver ($m, k, c, BL, I$ motor 5 key parameters).
+
+---
+
 ## 📜 License
 
 [MIT License](LICENSE) © 2026 ansv.net
