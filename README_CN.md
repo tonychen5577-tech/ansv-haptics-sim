@@ -50,6 +50,28 @@ $$m \cdot \frac{d^2x}{dt^2} + c \cdot \frac{dx}{dt} + k \cdot x = F(t) = BL \cdo
 
 ---
 
+## 🔄 核心解算流程框架 (Core Numerical Solver Architecture)
+
+为了直观展现物理引擎底层的数据流转与欧拉数值积分逻辑，以下是 `ansv-haptics-sim` 求解器的核心计算流程：
+
+```mermaid
+flowchart TD
+    A[1. 初始化执行器参数 m, k, c, BL] --> B[2. 导入驱动波形 I t]
+    B --> C[3. 初始化物理状态 x=0, v=0]
+    C --> D[4. 进入离散时间步循环 dt]
+    D --> E["5. 计算洛伦兹力: F = BL * I(t)"]
+    E --> F["6. 计算加速度: a = (F - c*v - k*x) / m"]
+    F --> G["7. 积分更新速度: v = v + a*dt"]
+    G --> H["8. 积分更新位移: x = x + v*dt"]
+    H --> I{9. 是否到达 Stop Time?}
+    I -- 否 --> D
+    I -- 是 --> J["10. 导出时域波形数据 (x, v, a)"]
+```
+
+> **图 2**：`ansv-haptics-sim` 核心数值积分求解流程图。
+
+---
+
 ## 🚀 快速上手与使用示例
 
 ```bash

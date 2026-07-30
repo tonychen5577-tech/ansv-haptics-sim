@@ -50,6 +50,28 @@ $$m \cdot \frac{d^2x}{dt^2} + c \cdot \frac{dx}{dt} + k \cdot x = F(t) = BL \cdo
 
 ---
 
+## 🔄 Core Numerical Solver Architecture
+
+To illustrate the underlying data flow and Euler numerical integration loop of the physics engine, below is the core execution flowchart of `ansv-haptics-sim`:
+
+```mermaid
+flowchart TD
+    A[1. Initialize Actuator Params m, k, c, BL] --> B[2. Import Drive Waveform I t]
+    B --> C[3. Init Physical State x=0, v=0]
+    C --> D[4. Enter Time-step Loop dt]
+    D --> E["5. Compute Lorentz Force: F = BL * I(t)"]
+    E --> F["6. Compute Acceleration: a = (F - c*v - k*x) / m"]
+    F --> G["7. Integrate Velocity: v = v + a*dt"]
+    G --> H["8. Integrate Displacement: x = x + v*dt"]
+    H --> I{9. Reached Stop Time?}
+    I -- No --> D
+    I -- Yes --> J["10. Export Time-Domain Data (x, v, a)"]
+```
+
+> **Figure 2**: `ansv-haptics-sim` Numerical Integration Solver Flowchart.
+
+---
+
 ## 🚀 Quick Start & Usage
 
 ```bash
