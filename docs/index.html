@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANSV Haptics Simulation | Live Studio (触觉马达物理仿真在线实验室)</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --panel-bg: #161b22;
+      --border-color: #30363d;
+      --accent-cyan: #00f2fe;
+      --accent-green: #00ff87;
+      --accent-red: #ff4d4d;
+      --accent-blue: #58a6ff;
+      --text-main: #f0f6fc;
+      --text-sub: #8b949e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 15px;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header .links a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 15px;
+    }
+    header .links a:hover { text-decoration: underline; }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .main-container { grid-template-columns: 1fr; }
+    }
+
+    .control-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .param-group {
+      margin-bottom: 16px;
+    }
+
+    .param-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .param-label span.value {
+      color: var(--accent-green);
+      font-family: monospace;
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-cyan);
+      background: #21262d;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    select {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .preset-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      background: #21262d;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #30363d;
+      border-color: var(--accent-cyan);
+    }
+
+    .canvas-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      background-color: #0d1117;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: #0d1117;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 600px) {
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+    .stat-item .label {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+    .stat-item .val {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--accent-cyan);
+      font-family: monospace;
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: 25px auto 0;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>⚡ ANSV-HAPTICS-SIM Live Studio</h1>
+    <div class="links">
+      <a href="https://github.com/tonychen5577-tech/ansv-haptics-sim" target="_blank">GitHub Repository</a>
+      <a href="https://ansv.net" target="_blank">ansv.net 官网</a>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- 左侧控制面板 -->
+    <div class="control-panel">
+      <div class="panel-title">🎛️ 物理参数实时调节</div>
+
+      <div class="param-group">
+        <div class="param-label">驱动模式 Drive Mode</div>
+        <select id="driveType">
+          <option value="ac">AC 交流正弦谐振 (AC Sine Drive)</option>
+          <option value="dc">DC 脉冲阶跃 (DC Step Pulse)</option>
+        </select>
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">振子质量 (m) <span class="value" id="val_mass">1.5 g</span></div>
+        <input type="range" id="mass" min="0.5" max="5.0" step="0.1" value="1.5">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">弹簧刚度 (k) <span class="value" id="val_k">800 N/m</span></div>
+        <input type="range" id="stiffness" min="200" max="2500" step="50" value="800">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">阻尼系数 (c) <span class="value" id="val_c">0.10 Ns/m</span></div>
+        <input type="range" id="damping" min="0.01" max="0.50" step="0.01" value="0.10">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">电磁力常数 (BL) <span class="value" id="val_bl">1.20 N/A</span></div>
+        <input type="range" id="bl" min="0.2" max="3.0" step="0.05" value="1.2">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">驱动电流 (I) <span class="value" id="val_current">0.40 A</span></div>
+        <input type="range" id="current" min="0.05" max="1.0" step="0.05" value="0.40">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">通电时长 (Drive Duration) <span class="value" id="val_driveDuration">200 ms</span></div>
+        <input type="range" id="driveDuration" min="20" max="300" step="5" value="200">
+      </div>
+
+      <div class="panel-title" style="margin-top: 20px;">🎯 预设场景 Presets</div>
+      <div class="preset-btns">
+        <button class="btn" onclick="applyPreset('lra_standard')">标准 LRA 马达</button>
+        <button class="btn" onclick="applyPreset('vcm_heavy')">重型 VCM 执行器</button>
+        <button class="btn" onclick="applyPreset('high_damping')">高阻尼快速止振</button>
+        <button class="btn" onclick="applyPreset('weak_spring')">软弹簧长余震</button>
+      </div>
+    </div>
+
+    <!-- 右侧渲染卡片 -->
+    <div class="canvas-card">
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="label">固有频率 f₀</div>
+          <div class="val" id="stat_f0">116.3 Hz</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">最大位移 Amplitude</div>
+          <div class="val" id="stat_maxDisp">±0.45 mm</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">最大加速度 Peak Acc</div>
+          <div class="val" id="stat_maxG">2.4 G</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">阻尼比 ζ</div>
+          <div class="val" id="stat_zeta">0.045</div>
+        </div>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="mainCanvas" width="850" height="420"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>⚡ Powered by <strong>ansv-haptics-sim</strong> Core Engine | Built for Micro-Actuator & Haptic Engineers</p>
+  </footer>
+
+  <script>
+    // 求解器前端算法（与 index.js 严格保持一致）
+    function solveBasicDampedOscillator(params = {}, durationSeconds = 0.260, dt = 0.0001) {
+      const m = params.mass || 0.0015;
+      const k = params.stiffness || 800;
+      const c = params.damping !== undefined ? params.damping : 0.10;
+      const BL = params.bl !== undefined ? params.bl : 1.2;
+      const I_peak = params.current !== undefined ? params.current : 0.4;
+      const driveType = params.driveType || 'ac';
+      const driveDuration = params.driveDuration !== undefined ? params.driveDuration : 0.200;
+
+      const f0Hz = (1 / (2 * Math.PI)) * Math.sqrt(k / m);
+      const omega = 2 * Math.PI * f0Hz;
+      const zeta = c / (2 * Math.sqrt(m * k));
+
+      const steps = Math.floor(durationSeconds / dt);
+      const time = [];
+      const displacement = [];
+      const acceleration = [];
+      const driveSignal = [];
+
+      let x = 0, v = 0;
+
+      for (let i = 0; i < steps; i++) {
+        const t = i * dt;
+        time.push(t * 1000); // ms
+        displacement.push(x * 1000); // mm
+
+        let F_t = 0;
+        if (t <= driveDuration) {
+          F_t = (driveType === 'ac') ? BL * I_peak * Math.sin(omega * t) : BL * I_peak;
+        }
+
+        driveSignal.push(F_t);
+        const a = (F_t - c * v - k * x) / m;
+        acceleration.push(a / 9.81); // G
+
+        v += a * dt;
+        x += v * dt;
+      }
+
+      return { time, displacement, acceleration, driveSignal, f0Hz: f0Hz.toFixed(1), zeta: zeta.toFixed(3) };
+    }
+
+    // UI 变量控制
+    const inputs = ['driveType', 'mass', 'stiffness', 'damping', 'bl', 'current', 'driveDuration'];
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let animFrameId;
+    let currentFrame = 0;
+    const totalAnimFrames = 240; // 4秒循环
+
+    function getParams() {
+      return {
+        driveType: document.getElementById('driveType').value,
+        mass: parseFloat(document.getElementById('mass').value) / 1000, // g -> kg
+        stiffness: parseFloat(document.getElementById('stiffness').value),
+        damping: parseFloat(document.getElementById('damping').value),
+        bl: parseFloat(document.getElementById('bl').value),
+        current: parseFloat(document.getElementById('current').value),
+        driveDuration: parseFloat(document.getElementById('driveDuration').value) / 1000 // ms -> s
+      };
+    }
+
+    function updateValues() {
+      document.getElementById('val_mass').innerText = document.getElementById('mass').value + ' g';
+      document.getElementById('val_k').innerText = document.getElementById('stiffness').value + ' N/m';
+      document.getElementById('val_c').innerText = parseFloat(document.getElementById('damping').value).toFixed(2) + ' Ns/m';
+      document.getElementById('val_bl').innerText = parseFloat(document.getElementById('bl').value).toFixed(2) + ' N/A';
+      document.getElementById('val_current').innerText = parseFloat(document.getElementById('current').value).toFixed(2) + ' A';
+      document.getElementById('val_driveDuration').innerText = document.getElementById('driveDuration').value + ' ms';
+    }
+
+    function render() {
+      updateValues();
+      const p = getParams();
+      const res = solveBasicDampedOscillator(p, 0.260);
+
+      // 更新 Stats
+      document.getElementById('stat_f0').innerText = res.f0Hz + ' Hz';
+      const maxDisp = Math.max(...res.displacement.map(Math.abs));
+      document.getElementById('stat_maxDisp').innerText = '±' + maxDisp.toFixed(2) + ' mm';
+      const maxG = Math.max(...res.acceleration.map(Math.abs));
+      document.getElementById('stat_maxG').innerText = maxG.toFixed(1) + ' G';
+      document.getElementById('stat_zeta').innerText = res.zeta;
+
+      // 绘图参数
+      const width = canvas.width;
+      const height = canvas.height;
+      const waveAreaWidth = width - 120; // 留出右侧马达质块动画区域
+      const padding = 50;
+      const graphWidth = waveAreaWidth - padding * 2;
+      const graphHeight = height - padding * 2;
+
+      const times = res.time;
+      const displacements = res.displacement;
+      const maxT = Math.max(...times);
+      const yBound = Math.max(0.5, Math.ceil(maxDisp * 1.2 * 10) / 10);
+
+      function scaleX(t) { return padding + (t / maxT) * graphWidth; }
+      function scaleY(d) { return height - padding - ((d - (-yBound)) / (yBound - (-yBound))) * graphHeight; }
+
+      const progress = (currentFrame % totalAnimFrames) / totalAnimFrames;
+      const currentIndex = Math.floor(progress * (displacements.length - 1));
+      const currentDispVal = displacements[currentIndex] || 0;
+
+      // 清屏
+      ctx.fillStyle = '#0d1117';
+      ctx.fillRect(0, 0, width, height);
+
+      // 1. 绘制三阶段背景
+      const stopX = scaleX(p.driveDuration * 1000);
+      ctx.fillStyle = 'rgba(0, 242, 254, 0.04)';
+      ctx.fillRect(padding, padding, stopX - padding, graphHeight);
+      ctx.fillStyle = 'rgba(255, 0, 85, 0.03)';
+      ctx.fillRect(stopX, padding, waveAreaWidth - padding - stopX, graphHeight);
+
+      // 2. 网格与刻度
+      ctx.strokeStyle = '#21262d';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      [yBound, yBound / 2, 0, -yBound / 2, -yBound].forEach(val => {
+        const y = scaleY(val);
+        ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(waveAreaWidth - padding, y); ctx.stroke();
+      });
+
+      // 零位线
+      ctx.strokeStyle = '#30363d';
+      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(padding, scaleY(0)); ctx.lineTo(waveAreaWidth - padding, scaleY(0)); ctx.stroke();
+
+      // 3. 波形图
+      if (currentIndex > 0) {
+        ctx.beginPath();
+        ctx.strokeStyle = '#00f2fe';
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        for (let i = 0; i <= currentIndex; i++) {
+          const x = scaleX(times[i]);
+          const y = scaleY(displacements[i]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // 头部圆点
+        const hX = scaleX(times[currentIndex]);
+        const hY = scaleY(currentDispVal);
+        ctx.fillStyle = '#00f2fe'; ctx.beginPath(); ctx.arc(hX, hY, 5, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // 4. 标题与标注
+      ctx.fillStyle = '#8b949e'; ctx.font = '12px sans-serif';
+      ctx.fillText(`+${yBound.toFixed(1)}mm`, 10, scaleY(yBound) + 4);
+      ctx.fillText(`-${yBound.toFixed(1)}mm`, 10, scaleY(-yBound) + 4);
+      ctx.fillText('时间 Time (ms)', waveAreaWidth - padding - 80, height - 15);
+
+      // 5. 右侧 2D 触觉马达质块弹簧物理动画 (Haptic Motor Simulation)
+      const motorCenterX = width - 60;
+      const motorCenterY = height / 2;
+      const motorDispScale = (graphHeight / 2) / yBound;
+      const massY = motorCenterY - currentDispVal * motorDispScale;
+
+      // 绘制外框/外壳 (Housing)
+      ctx.strokeStyle = '#30363d';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(motorCenterX - 35, padding, 70, graphHeight);
+      ctx.fillStyle = '#161b22';
+      ctx.fillRect(motorCenterX - 35, padding, 70, graphHeight);
+
+      // 绘制弹簧 (Spring)
+      ctx.strokeStyle = '#58a6ff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(motorCenterX, padding);
+      const coils = 10;
+      const springLen = massY - 25 - padding;
+      for (let i = 0; i <= coils; i++) {
+        const sy = padding + (springLen / coils) * i;
+        const sx = motorCenterX + (i % 2 === 0 ? 12 : -12);
+        ctx.lineTo(sx, sy);
+      }
+      ctx.lineTo(motorCenterX, massY - 20);
+      ctx.stroke();
+
+      // 绘制振子 (Mass Block)
+      ctx.fillStyle = currentIndex < Math.floor((p.driveDuration * 1000 / maxT) * displacements.length) ? '#00ff87' : '#ff4d4d';
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = 10;
+      ctx.fillRect(motorCenterX - 25, massY - 20, 50, 40);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#0d1117';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MASS', motorCenterX, massY + 4);
+
+      currentFrame++;
+      animFrameId = requestAnimationFrame(render);
+    }
+
+    function applyPreset(name) {
+      if (name === 'lra_standard') {
+        document.getElementById('driveType').value = 'ac';
+        document.getElementById('mass').value = 1.5;
+        document.getElementById('stiffness').value = 800;
+        document.getElementById('damping').value = 0.10;
+        document.getElementById('bl').value = 1.2;
+        document.getElementById('current').value = 0.4;
+        document.getElementById('driveDuration').value = 200;
+      } else if (name === 'vcm_heavy') {
+        document.getElementById('driveType').value = 'ac';
+        document.getElementById('mass').value = 3.5;
+        document.getElementById('stiffness').value = 1500;
+        document.getElementById('damping').value = 0.18;
+        document.getElementById('bl').value = 2.2;
+        document.getElementById('current').value = 0.6;
+        document.getElementById('driveDuration').value = 200;
+      } else if (name === 'high_damping') {
+        document.getElementById('driveType').value = 'dc';
+        document.getElementById('mass').value = 1.5;
+        document.getElementById('stiffness').value = 1000;
+        document.getElementById('damping').value = 0.35;
+        document.getElementById('bl').value = 1.2;
+        document.getElementById('current').value = 0.5;
+        document.getElementById('driveDuration').value = 100;
+      } else if (name === 'weak_spring') {
+        document.getElementById('driveType').value = 'ac';
+        document.getElementById('mass').value = 2.0;
+        document.getElementById('stiffness').value = 350;
+        document.getElementById('damping').value = 0.03;
+        document.getElementById('bl').value = 1.0;
+        document.getElementById('current').value = 0.3;
+        document.getElementById('driveDuration').value = 150;
+      }
+    }
+
+    // 事件绑定
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        cancelAnimationFrame(animFrameId);
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

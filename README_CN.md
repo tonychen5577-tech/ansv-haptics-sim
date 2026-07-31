@@ -2,15 +2,18 @@
 
 > 🚀 **一款专为硬件工程师和算法开发者打造的轻量级、零依赖二阶阻尼振荡器物理求解器。用于 LRA 线性马达与 VCM 触觉执行器的基础受力响应建模与动态位移仿真。**
 
- [English](README.md) | 简体中文
+ [English](README.md) | 简体中文 | 🌐 **[🚀 在线 Live Studio 实验室 (Web Demo)](https://tonychen5577-tech.github.io/ansv-haptics-sim/)**
 
 ---
 
-## 📈 动态模拟效果展示
+## 📈 动态模拟与交互可视化展示
+
+- 🌐 **Web 交互实验室**：在浏览器打开 [`docs/index.html`](docs/index.html) 或访问 [Online Live Studio Demo](https://tonychen5577-tech.github.io/ansv-haptics-sim/)，支持实时拖拽调节参数与 2D 触觉马达物理动画联动！
 
 以下为 `ansv-haptics-sim` 求解获得的触觉马达（LRA）受力与阻尼衰减动画曲线，展示完整的触觉物理生命周期（瞬态起振 $\rightarrow$ 持续平稳长振动 $\rightarrow$ 断电刹车余震衰减）：
 
 ![2nd-Order Damped Oscillator Simulation](https://raw.githubusercontent.com/tonychen5577-tech/ansv-haptics-sim/main/docs/simulation.svg?v=8)
+
 
 ---
 
@@ -138,6 +141,12 @@ console.log(`📈 稳态长振动幅值: ±${Math.max(...res.displacement.slice(
 
 ## 📜 版本更新历史 (Release History)
 
+- **`v1.2.0` (2026-07-31)**
+  - 🌐 **全新推出零依赖 Web Live Studio 交互式物理仿真实验室** (`docs/index.html`)。
+  - 🎛️ **实时参数调优**：支持在 Web 端拖动滑块实时调节 $m, k, c, BL, I$ 等物理参数并即时解算波形。
+  - 🧲 **2D 触觉马达物理动画**：新增右侧 2D 弹簧与振子质块 Live 实时动态联动效果。
+  - 🎯 **预设场景**：内置标准 LRA、重型 VCM、高阻尼止振、弱弹簧长余震等多种经典硬件场景一键切换。
+
 - **`v1.1.0` (2026-07-31)**
   - 🔄 增加了物理解算核心数值积分流程图 (Mermaid Flowchart)。
   - ⚡ 支持 AC 交流正弦谐振与完整触觉生命周期（起振 ➔ 200ms 长稳态 ➔ 断电余震衰减）。
@@ -152,3 +161,4 @@ console.log(`📈 稳态长振动幅值: ±${Math.max(...res.displacement.slice(
 ## 📜 许可证
 
 [MIT License](LICENSE) © 2026 ansv.net
+
