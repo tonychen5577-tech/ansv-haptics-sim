@@ -144,9 +144,10 @@ console.log(`📈 Steady-State Amplitude: ±${Math.max(...res.displacement.slice
 
 - **`v1.2.0` (2026-07-31)**
   - 🌐 **Launched Zero-Dependency Web Live Studio** (`docs/index.html`).
-  - 🎛️ **Real-Time Parameter Tuning**: Interactive Web UI sliders to dynamically tweak $m, k, c, BL, I$ and instantly recompute waveforms.
+  - 🎛️ **Real-Time Parameter Tuning & i18n**: Interactive Web UI with **Chinese/English** language toggle, sliders to dynamically tweak $m, k, c, BL, I$ and instantly recompute waveforms.
   - 🧲 **2D Haptic Motor Motion Simulation**: Added synchronized 2D spring and moving mass physics animation in Canvas.
   - 🎯 **Presets**: One-click switching between Standard LRA, Heavy VCM, High Damping Fast Cutoff, and Soft Spring Ring-down.
+
 
 - **`v1.1.0` (2026-07-31)**
   - 🔄 Added Mermaid flowchart for core numerical integration solver architecture.

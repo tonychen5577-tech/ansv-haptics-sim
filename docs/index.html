@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANSV Haptics Simulation | Live Studio (触觉马达物理仿真在线实验室)</title>
+  <title>ANSV Haptics Simulation | Live Studio</title>
   <style>
     :root {
       --bg-color: #0d1117;
@@ -44,13 +44,43 @@
       gap: 10px;
     }
 
+    header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
     header .links a {
       color: var(--accent-blue);
       text-decoration: none;
       font-size: 0.9rem;
-      margin-left: 15px;
+      margin-left: 10px;
     }
     header .links a:hover { text-decoration: underline; }
+
+    .lang-switcher {
+      display: flex;
+      background: #21262d;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--accent-cyan);
+      color: #0d1117;
+    }
 
     .main-container {
       max-width: 1200px;
@@ -206,61 +236,67 @@
 
   <header>
     <h1>⚡ ANSV-HAPTICS-SIM Live Studio</h1>
-    <div class="links">
-      <a href="https://github.com/tonychen5577-tech/ansv-haptics-sim" target="_blank">GitHub Repository</a>
-      <a href="https://ansv.net" target="_blank">ansv.net 官网</a>
+    <div class="header-right">
+      <div class="lang-switcher">
+        <button class="lang-btn active" id="btn-zh" onclick="setLanguage('zh')">中文</button>
+        <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">English</button>
+      </div>
+      <div class="links">
+        <a href="https://github.com/tonychen5577-tech/ansv-haptics-sim" target="_blank">GitHub</a>
+        <a href="https://ansv.net" target="_blank" id="link-official">ansv.net 官网</a>
+      </div>
     </div>
   </header>
 
   <div class="main-container">
     <!-- 左侧控制面板 -->
     <div class="control-panel">
-      <div class="panel-title">🎛️ 物理参数实时调节</div>
+      <div class="panel-title" id="txt-panel-title">🎛️ 物理参数实时调节</div>
 
       <div class="param-group">
-        <div class="param-label">驱动模式 Drive Mode</div>
+        <div class="param-label" id="lbl-driveType">驱动模式 Drive Mode</div>
         <select id="driveType">
-          <option value="ac">AC 交流正弦谐振 (AC Sine Drive)</option>
-          <option value="dc">DC 脉冲阶跃 (DC Step Pulse)</option>
+          <option value="ac" id="opt-ac">AC 交流正弦谐振 (AC Sine Drive)</option>
+          <option value="dc" id="opt-dc">DC 脉冲阶跃 (DC Step Pulse)</option>
         </select>
       </div>
 
       <div class="param-group">
-        <div class="param-label">振子质量 (m) <span class="value" id="val_mass">1.5 g</span></div>
+        <div class="param-label"><span id="lbl-mass">振子质量 (m)</span> <span class="value" id="val_mass">1.5 g</span></div>
         <input type="range" id="mass" min="0.5" max="5.0" step="0.1" value="1.5">
       </div>
 
       <div class="param-group">
-        <div class="param-label">弹簧刚度 (k) <span class="value" id="val_k">800 N/m</span></div>
+        <div class="param-label"><span id="lbl-k">弹簧刚度 (k)</span> <span class="value" id="val_k">800 N/m</span></div>
         <input type="range" id="stiffness" min="200" max="2500" step="50" value="800">
       </div>
 
       <div class="param-group">
-        <div class="param-label">阻尼系数 (c) <span class="value" id="val_c">0.10 Ns/m</span></div>
+        <div class="param-label"><span id="lbl-c">阻尼系数 (c)</span> <span class="value" id="val_c">0.10 Ns/m</span></div>
         <input type="range" id="damping" min="0.01" max="0.50" step="0.01" value="0.10">
       </div>
 
       <div class="param-group">
-        <div class="param-label">电磁力常数 (BL) <span class="value" id="val_bl">1.20 N/A</span></div>
+        <div class="param-label"><span id="lbl-bl">电磁力常数 (BL)</span> <span class="value" id="val_bl">1.20 N/A</span></div>
         <input type="range" id="bl" min="0.2" max="3.0" step="0.05" value="1.2">
       </div>
 
       <div class="param-group">
-        <div class="param-label">驱动电流 (I) <span class="value" id="val_current">0.40 A</span></div>
+        <div class="param-label"><span id="lbl-current">驱动电流 (I)</span> <span class="value" id="val_current">0.40 A</span></div>
         <input type="range" id="current" min="0.05" max="1.0" step="0.05" value="0.40">
       </div>
 
       <div class="param-group">
-        <div class="param-label">通电时长 (Drive Duration) <span class="value" id="val_driveDuration">200 ms</span></div>
+        <div class="param-label"><span id="lbl-driveDuration">通电时长 (Duration)</span> <span class="value" id="val_driveDuration">200 ms</span></div>
         <input type="range" id="driveDuration" min="20" max="300" step="5" value="200">
       </div>
 
-      <div class="panel-title" style="margin-top: 20px;">🎯 预设场景 Presets</div>
+      <div class="panel-title" style="margin-top: 20px;" id="txt-preset-title">🎯 预设场景 Presets</div>
       <div class="preset-btns">
-        <button class="btn" onclick="applyPreset('lra_standard')">标准 LRA 马达</button>
-        <button class="btn" onclick="applyPreset('vcm_heavy')">重型 VCM 执行器</button>
-        <button class="btn" onclick="applyPreset('high_damping')">高阻尼快速止振</button>
-        <button class="btn" onclick="applyPreset('weak_spring')">软弹簧长余震</button>
+        <button class="btn" id="btn-preset1" onclick="applyPreset('lra_standard')">标准 LRA 马达</button>
+        <button class="btn" id="btn-preset2" onclick="applyPreset('vcm_heavy')">重型 VCM 执行器</button>
+        <button class="btn" id="btn-preset3" onclick="applyPreset('high_damping')">高阻尼快速止振</button>
+        <button class="btn" id="btn-preset4" onclick="applyPreset('weak_spring')">弱弹簧长余震</button>
       </div>
     </div>
 
@@ -268,19 +304,19 @@
     <div class="canvas-card">
       <div class="stats-bar">
         <div class="stat-item">
-          <div class="label">固有频率 f₀</div>
+          <div class="label" id="lbl-stat-f0">固有频率 f₀</div>
           <div class="val" id="stat_f0">116.3 Hz</div>
         </div>
         <div class="stat-item">
-          <div class="label">最大位移 Amplitude</div>
+          <div class="label" id="lbl-stat-disp">最大位移 Amplitude</div>
           <div class="val" id="stat_maxDisp">±0.45 mm</div>
         </div>
         <div class="stat-item">
-          <div class="label">最大加速度 Peak Acc</div>
+          <div class="label" id="lbl-stat-acc">最大加速度 Peak Acc</div>
           <div class="val" id="stat_maxG">2.4 G</div>
         </div>
         <div class="stat-item">
-          <div class="label">阻尼比 ζ</div>
+          <div class="label" id="lbl-stat-zeta">阻尼比 ζ</div>
           <div class="val" id="stat_zeta">0.045</div>
         </div>
       </div>
@@ -292,10 +328,97 @@
   </div>
 
   <footer>
-    <p>⚡ Powered by <strong>ansv-haptics-sim</strong> Core Engine | Built for Micro-Actuator & Haptic Engineers</p>
+    <p id="txt-footer">⚡ Powered by <strong>ansv-haptics-sim</strong> Core Engine | Built for Micro-Actuator & Haptic Engineers</p>
   </footer>
 
   <script>
+    let currentLang = 'zh';
+
+    const i18n = {
+      zh: {
+        title: "ANSV Haptics Simulation | Live Studio (触觉马达物理仿真在线实验室)",
+        panelTitle: "🎛️ 物理参数实时调节",
+        driveType: "驱动模式 Drive Mode",
+        optAc: "AC 交流正弦谐振 (AC Sine Drive)",
+        optDc: "DC 脉冲阶跃 (DC Step Pulse)",
+        mass: "振子质量 (m)",
+        k: "弹簧刚度 (k)",
+        c: "阻尼系数 (c)",
+        bl: "电磁力常数 (BL)",
+        current: "驱动电流 (I)",
+        driveDuration: "通电时长 (Drive Duration)",
+        presetTitle: "🎯 预设场景 Presets",
+        preset1: "标准 LRA 马达",
+        preset2: "重型 VCM 执行器",
+        preset3: "高阻尼快速止振",
+        preset4: "弱弹簧长余震",
+        statF0: "固有频率 f₀",
+        statDisp: "最大位移 Amplitude",
+        statAcc: "最大加速度 Peak Acc",
+        statZeta: "阻尼比 ζ",
+        timeAxis: "时间 Time (ms)",
+        officialLink: "ansv.net 官网",
+        footer: "⚡ Powered by <strong>ansv-haptics-sim</strong> 核心引擎 | 专为微型执行器与触觉工程师打造",
+        massLabel: "MASS 振子"
+      },
+      en: {
+        title: "ANSV Haptics Simulation | Live Studio",
+        panelTitle: "🎛️ Real-Time Parameter Tuning",
+        driveType: "Drive Mode",
+        optAc: "AC Sine Resonance Drive",
+        optDc: "DC Step Pulse Drive",
+        mass: "Moving Mass (m)",
+        k: "Spring Stiffness (k)",
+        c: "Damping Factor (c)",
+        bl: "Force Factor (BL)",
+        current: "Drive Current (I)",
+        driveDuration: "Drive Duration",
+        presetTitle: "🎯 Presets",
+        preset1: "Standard LRA",
+        preset2: "Heavy VCM Actuator",
+        preset3: "High Damping Cutoff",
+        preset4: "Soft Spring Ring-down",
+        statF0: "Resonant Freq f₀",
+        statDisp: "Max Amplitude",
+        statAcc: "Peak Acceleration",
+        statZeta: "Damping Ratio ζ",
+        timeAxis: "Time (ms)",
+        officialLink: "ansv.net Website",
+        footer: "⚡ Powered by <strong>ansv-haptics-sim</strong> Core Engine | Built for Micro-Actuator & Haptic Engineers",
+        massLabel: "MASS"
+      }
+    };
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      
+      const t = i18n[lang];
+      document.title = t.title;
+      document.getElementById('txt-panel-title').innerText = t.panelTitle;
+      document.getElementById('lbl-driveType').innerText = t.driveType;
+      document.getElementById('opt-ac').innerText = t.optAc;
+      document.getElementById('opt-dc').innerText = t.optDc;
+      document.getElementById('lbl-mass').innerText = t.mass;
+      document.getElementById('lbl-k').innerText = t.k;
+      document.getElementById('lbl-c').innerText = t.c;
+      document.getElementById('lbl-bl').innerText = t.bl;
+      document.getElementById('lbl-current').innerText = t.current;
+      document.getElementById('lbl-driveDuration').innerText = t.driveDuration;
+      document.getElementById('txt-preset-title').innerText = t.presetTitle;
+      document.getElementById('btn-preset1').innerText = t.preset1;
+      document.getElementById('btn-preset2').innerText = t.preset2;
+      document.getElementById('btn-preset3').innerText = t.preset3;
+      document.getElementById('btn-preset4').innerText = t.preset4;
+      document.getElementById('lbl-stat-f0').innerText = t.statF0;
+      document.getElementById('lbl-stat-disp').innerText = t.statDisp;
+      document.getElementById('lbl-stat-acc').innerText = t.statAcc;
+      document.getElementById('lbl-stat-zeta').innerText = t.statZeta;
+      document.getElementById('link-official').innerText = t.officialLink;
+      document.getElementById('txt-footer').innerHTML = t.footer;
+    }
+
     // 求解器前端算法（与 index.js 严格保持一致）
     function solveBasicDampedOscillator(params = {}, durationSeconds = 0.260, dt = 0.0001) {
       const m = params.mass || 0.0015;
@@ -450,7 +573,7 @@
       ctx.fillStyle = '#8b949e'; ctx.font = '12px sans-serif';
       ctx.fillText(`+${yBound.toFixed(1)}mm`, 10, scaleY(yBound) + 4);
       ctx.fillText(`-${yBound.toFixed(1)}mm`, 10, scaleY(-yBound) + 4);
-      ctx.fillText('时间 Time (ms)', waveAreaWidth - padding - 80, height - 15);
+      ctx.fillText(i18n[currentLang].timeAxis, waveAreaWidth - padding - 80, height - 15);
 
       // 5. 右侧 2D 触觉马达质块弹簧物理动画 (Haptic Motor Simulation)
       const motorCenterX = width - 60;
@@ -490,7 +613,7 @@
       ctx.fillStyle = '#0d1117';
       ctx.font = 'bold 11px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('MASS', motorCenterX, massY + 4);
+      ctx.fillText(i18n[currentLang].massLabel, motorCenterX, massY + 4);
 
       currentFrame++;
       animFrameId = requestAnimationFrame(render);
